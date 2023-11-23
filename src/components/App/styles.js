@@ -20,7 +20,7 @@ export const Container = styled.div`
   border-radius: 10px;
 
   h1 {
-    margin-bottom: 20px;
+    margin-bottom: 0px;
   }
 
   h2 {
@@ -31,7 +31,4 @@ export const Container = styled.div`
     margin-top: 10px;
   }
 
-  button:first-child {
-    margin-right: 10px;
-  }
 `;
