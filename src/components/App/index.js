@@ -1,6 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 
 import { Container, CenteredContainer } from './styles';
+
+//Creates somewhat of an environment for your components, where it's values are
+//accessible from any of the children componentes without prop drilling.
+
+//To see changes, go to line 61 and change the mode so the context changes
+const ThemeContext = createContext();
 
 function App(){
 
@@ -37,7 +43,7 @@ function App(){
   }
 
   return(
-    <CenteredContainer>
+      <CenteredContainer>
       <Container>
       <h1>useState</h1>
       <h2>Current value of counter: {counter}</h2>
@@ -52,9 +58,21 @@ function App(){
       <label htmlFor="nameChanger">Change name below 👇 </label>
       <br/>
       <input id="nameChanger" onChange={e => setName(e.target.value)}></input>
-
+      <h1>useContext</h1>
+      <ThemeContext.Provider value={'light'}>
+        <Button/>
+      </ThemeContext.Provider>
       </Container>
     </CenteredContainer>
+  );
+}
+
+function Button(){
+  const theme = useContext(ThemeContext);
+  console.log(theme);
+
+  return(
+    <button>{theme}</button>
   );
 }
 
