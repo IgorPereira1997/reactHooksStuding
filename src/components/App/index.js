@@ -1,4 +1,11 @@
-import React, { useState, useEffect, createContext, useContext, useReducer, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  useReducer,
+  useRef,
+  useCallback } from 'react';
 
 import { Container, CenteredContainer } from './styles';
 
@@ -45,6 +52,23 @@ function App(){
     };
   }
 
+  //useCallBack is used to use less instances of a function by avoiding it to be
+  //instanced again everytime a change happens in a component, making just a new
+  //new instance when it's really nexessary. The drawback is that the memory
+  //usage is increased by mantaining the function into memory. so it's better to
+  //use it when passing the function to child components
+
+  const handlePlusCallback = useCallback(() => {
+    setCounter((prevState) => prevState + 1);
+  },[]);
+
+  const handleMinusCallback = useCallback(() => {
+    setCounter((prevState) => prevState - 1);
+  },[]);
+
+  const fnCounterStandard = new Set();
+  const fnCounterUseCallback = new Set();
+
   function newHandlePlus() {
     dispatch({type: 'plus'});
   }
@@ -66,8 +90,6 @@ function App(){
   );
 
 
-  function handlePlus(){
-
     //The below is wrong because doent't take into consideration
     //The updated state if this function is called multiple times,
     //depending on how long the instructions take to execute!
@@ -78,12 +100,18 @@ function App(){
     //the previous state, no matter how long the inside instructions take to
     //execute it will consider it for the next calls
 
+  function handlePlus(){
     setCounter((prevState) => prevState + 1);
   }
 
   function handleMinus(){
     setCounter((prevState) => prevState - 1);
   }
+
+  fnCounterStandard.add(handlePlus);
+  fnCounterUseCallback.add(handlePlusCallback);
+  console.log('Current value of functionSet (Standard): ', fnCounterStandard.size);
+  console.log('Current value of functionSet (Callback): ', fnCounterUseCallback.size);
 
   return(
       <CenteredContainer>
@@ -111,6 +139,12 @@ function App(){
       <br/>
       <button onClick={newHandlePlus}>+</button>
       <button onClick={newHandleMinus}>-</button>
+      <br/>
+      <h1>useCallback</h1>
+      <h2>Current value of counter: {counter}</h2>
+      <br/>
+      <button onClick={handlePlusCallback}>+</button>
+      <button onClick={handleMinusCallback}>-</button>
       <br/>
       </Container>
     </CenteredContainer>
