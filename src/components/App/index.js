@@ -1,14 +1,19 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext, useReducer, useRef } from 'react';
 
 import { Container, CenteredContainer } from './styles';
 
 //Creates somewhat of an environment for your components, where it's values are
-//accessible from any of the children componentes without prop drilling.
+//accessible from any of the children componentes without prop drilling. It's used
+//together with useContext to aplly it's definitions.
 
 //To see changes, go to line 61 and change the mode so the context changes
 const ThemeContext = createContext();
 
 function App(){
+
+  //useState is used to declare a variable and a function to control it's changes,
+  //where this function works JUST for the said variable which you defined the use
+  //state for, as the example below shows
 
   const [counter, setCounter] = useState(0);
   const [name, setName] = useState('');
@@ -22,6 +27,44 @@ function App(){
   useEffect(() => {
     console.log('Name was changed!');
   }, [name]);
+
+  function reducer(state, action){
+    switch(action.type){
+      case 'plus':
+        return {
+          counter: state.counter + 1,
+          clicks: state.clicks + 1
+        };
+      case 'minus':
+        return {
+          counter: state.counter - 1,
+          clicks: state.clicks + 1
+        };
+      default:
+        return state;
+    };
+  }
+
+  function newHandlePlus() {
+    dispatch({type: 'plus'});
+  }
+
+  function newHandleMinus(){
+    dispatch({type: 'minus'});
+  }
+
+  const initialValue = {counter: 0, clicks: 0};
+
+// Use reducer is used to recover the current state of an object, and give a
+// function to take care of it's changes. So it has to have the reducer, or the
+//dispatch function, and the initialValue as the object which you wanna monitor.
+//Optionally, you cound send a function to determine the initialValue behaviour
+
+  const [state, dispatch] = useReducer(
+    reducer,
+    initialValue,
+  );
+
 
   function handlePlus(){
 
@@ -62,6 +105,13 @@ function App(){
       <ThemeContext.Provider value={'light'}>
         <Button/>
       </ThemeContext.Provider>
+      <h1>useReducer</h1>
+      <h2>Current value of counter: {state.counter}</h2>
+      <h2>Clicks made: {state.clicks}</h2>
+      <br/>
+      <button onClick={newHandlePlus}>+</button>
+      <button onClick={newHandleMinus}>-</button>
+      <br/>
       </Container>
     </CenteredContainer>
   );
