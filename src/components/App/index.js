@@ -5,6 +5,7 @@ import React, {
   useContext,
   useReducer,
   useRef,
+  useMemo,
   useCallback } from 'react';
 
 import { Container, CenteredContainer } from './styles';
@@ -113,6 +114,39 @@ function App(){
   console.log('Current value of functionSet (Standard): ', fnCounterStandard.size);
   console.log('Current value of functionSet (Callback): ', fnCounterUseCallback.size);
 
+  //useMemo -> It functions simillary to useCallback, but it don't returns the
+  //fucntion, but executes it. It's useful as a eventeListener to a variable,
+  //avoiding a costly change on any variable to force a update, because with said
+  //hook the render will update just when the variable monitored is changed.
+
+  const currentName = useMemo(() => {
+    return name ?? ''
+  }, [name]);
+
+  //useRef -> it has to mai purposes, first one of them is to save values that
+  //can be updated in a component and avoid an re-render of the componente it is
+  //inserted into. Second is access elements imperatively from the elements' tree
+
+  const number = useRef(0);
+
+  //Forces re-render when changed
+  //const [number, setNumber] = useState(0);
+
+  function handleSetValue(){
+    const newNumber = Math.round(Math.random() * (10 - 1) + 1);
+    //setNumber(newNumber);
+    number.current = newNumber;
+  }
+  function handlePrintValue(){
+    alert(number.current);
+  }
+
+  const inputRef = useRef(null);
+
+  function handlePrintName(){
+    alert(inputRef.current.value);
+  }
+
   return(
       <CenteredContainer>
       <Container>
@@ -145,7 +179,20 @@ function App(){
       <br/>
       <button onClick={handlePlusCallback}>+</button>
       <button onClick={handleMinusCallback}>-</button>
+      <h1>useMemo</h1>
       <br/>
+      <label htmlFor="nameChangerMemo">Change name below 👇 </label>
+      <br/>
+      <input id="nameChangerMemo" onChange={e => setName(e.target.value)}></input>
+      <br/>
+      <h1>useRef</h1>
+      <h2>Current value of number: {number.current}</h2>
+      <br/>
+      <button onClick={handleSetValue}>Set Value</button>
+      <button onClick={handlePrintValue}>Print Value</button>
+      <br/>
+      <input ref={inputRef}/>
+      <button onClick={handlePrintName}>Print Name</button>
       </Container>
     </CenteredContainer>
   );
