@@ -8,7 +8,8 @@ import React, {
   useMemo,
   useCallback,
   useImperativeHandle,
-  forwardRef} from 'react';
+  forwardRef,
+  useLayoutEffect} from 'react';
 
 import { Container, CenteredContainer } from './styles';
 
@@ -154,6 +155,26 @@ function App(){
   function handleSubmit(){
     formRef.current.submit();
   }
+
+  //useEffect vs useLayoutEffect -> useLayoutEffect is sinchronous, being applied
+  //BEFORE the render updates the screen, while useEffect is asynchronous, being
+  //applied AFTER the render updates screen
+
+  useEffect(()=>{
+    for(let i = 50000; i>= 0; i--){
+      //console.log(i);
+    }
+    console.log('useEffect for the win!');
+  }, [counter]);
+
+  useLayoutEffect(()=>{
+    for(let i = 1; i<= 50000; i++){
+      //console.log(i);
+    }
+    console.log('useLayoutEffect for the win!');
+  }, [state.counter]);
+
+
 
   return(
       <CenteredContainer>
