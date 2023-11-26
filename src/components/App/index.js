@@ -6,7 +6,9 @@ import React, {
   useReducer,
   useRef,
   useMemo,
-  useCallback } from 'react';
+  useCallback,
+  useImperativeHandle,
+  forwardRef} from 'react';
 
 import { Container, CenteredContainer } from './styles';
 
@@ -147,6 +149,12 @@ function App(){
     alert(inputRef.current.value);
   }
 
+  const formRef = useRef(null);
+
+  function handleSubmit(){
+    formRef.current.submit();
+  }
+
   return(
       <CenteredContainer>
       <Container>
@@ -193,6 +201,11 @@ function App(){
       <br/>
       <input ref={inputRef}/>
       <button onClick={handlePrintName}>Print Name</button>
+      <h1>useImperativeHandle</h1>
+      <br/>
+      <Form ref={formRef}/>
+      <button onClick={handleSubmit}>Submit</button>
+      <br/>
       </Container>
     </CenteredContainer>
   );
@@ -206,5 +219,32 @@ function Button(){
     <button>{theme}</button>
   );
 }
+
+//useImperativeHandle & forwardRef -> If using imperative code, although this pratice
+//is not recommended, you can manipulate the ref value of a Component using these functions
+//together, so forwardRef can forward the reference defined, just as it occurs into HTML
+
+const Form = forwardRef((props, ref) => {
+  const inputRef = useRef(null);
+
+  function handleSubmit(){
+    alert(inputRef.current.value);
+  }
+
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        submit: handleSubmit,
+      };
+    },
+    []
+  );
+  return(
+    <form>
+      <input ref={inputRef}/>
+    </form>
+  );
+})
 
 export default App;
