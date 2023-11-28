@@ -9,6 +9,7 @@ import React, {
   useCallback,
   useImperativeHandle,
   forwardRef,
+  useDebugValue,
   useLayoutEffect} from 'react';
 
 import { Container, CenteredContainer } from './styles';
@@ -202,6 +203,16 @@ function App(){
 
       fetchData();
     }, [url]);
+
+    //useDebugValue -> Works just with custom hook, and it useful to, as the
+    //name implies, to undestand functionallity of your custom hook. Interesting
+    //To be used with React Developer Tools, a Chrome Extension, so you can
+    //see your react aplication better and change values on the go for returns on
+    //your hooks, for example
+
+    useDebugValue('label', (message) => {
+      return `Message: ${message}`;
+    });
 
     return [loading, response];
   }
