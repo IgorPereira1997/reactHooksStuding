@@ -31,4 +31,10 @@ export const Container = styled.div`
     margin-top: 10px;
   }
 
+  p{
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+  }
+
 `;

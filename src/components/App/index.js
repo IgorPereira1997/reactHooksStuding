@@ -174,6 +174,40 @@ function App(){
     console.log('useLayoutEffect for the win!');
   }, [state.counter]);
 
+  //Custom Hooks -> You can create your own hook, based on your needs and
+  //objectives to it. Basicaly, your hook can be what you want, working as a
+  //custom function, but working as a hook
+
+  function useFetch(url) {
+    const [loading, setLoading] = useState(true);
+    const [response, setResponse] = useState(null);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          // Introduza um atraso de 2 segundos (2000 milissegundos)
+          await new Promise(resolve => setTimeout(resolve, 2000));
+
+          const resp = await fetch(url);
+          const json = await resp.json();
+
+          setLoading(false);
+          setResponse(json);
+        } catch (error) {
+          console.error('Erro na requisição:', error);
+          setLoading(false);
+          setResponse(null);
+        }
+      };
+
+      fetchData();
+    }, [url]);
+
+    return [loading, response];
+  }
+
+  const [loading, response] = useFetch('https://rickandmortyapi.com/api/character');
+
 
 
   return(
@@ -226,6 +260,9 @@ function App(){
       <br/>
       <Form ref={formRef}/>
       <button onClick={handleSubmit}>Submit</button>
+      <br/>
+      <h1>Custom Hooks</h1>
+      {loading === true ? <h1>Loading...</h1> : <p>{JSON.stringify(response)}</p>}
       <br/>
       </Container>
     </CenteredContainer>
